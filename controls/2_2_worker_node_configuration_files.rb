@@ -17,6 +17,9 @@
 
 title '2.2 Worker Node: Configuration Files'
 
+kubeproxy = attribute('kubeproxy', default: kubernetes.processname_kubeproxy, description: 'The name of the kubeproxy process')
+
+
 control 'cis-kubernetes-benchmark-2.2.1' do
   title 'Ensure that the kubelet.conf file permissions are set to 644 or more restrictive'
   desc "Ensure that the kubelet.conf file has permissions of 644 or more restrictive.\n\nRationale: The kubelet.conf file is the kubeconfig file for the node, and controls various parameters that set the behavior and identity of the worker node. You should restrict its file permissions to maintain the integrity of the file. The file should be writable by only the administrators on the system."
@@ -60,8 +63,8 @@ control 'cis-kubernetes-benchmark-2.2.3' do
   tag cis: 'kubernetes:2.2.3'
   tag level: 1
 
-  if file('/etc/systemd/system/kubelet.service.d/10-kubeadm.conf').exist?
-    describe file('/etc/systemd/system/kubelet.service.d/10-kubeadm.conf').mode.to_s do
+  if file('/etc/systemd/system/kubelet.service').exist?
+    describe file('/etc/systemd/system/kubelet.service').mode.to_s  do
       it { should match(/[0246][024][024]/) }
     end
   else
@@ -79,8 +82,8 @@ control 'cis-kubernetes-benchmark-2.2.4' do
   tag cis: 'kubernetes:2.2.4'
   tag level: 1
 
-  if file('/etc/systemd/system/kubelet.service.d/10-kubeadm.conf').exist?
-    describe file('/etc/systemd/system/kubelet.service.d/10-kubeadm.conf') do
+  if file('/etc/systemd/system/kubelet.service').exist?
+    describe file('/etc/systemd/system/kubelet.service') do
       it { should be_owned_by 'root' }
       it { should be_grouped_into 'root' }
     end
@@ -99,8 +102,8 @@ control 'cis-kubernetes-benchmark-2.2.5' do
   tag cis: 'kubernetes:2.2.5'
   tag level: 1
 
-  if processes('kube-proxy').exists?
-    conf_file = processes('kube-proxy').commands.first.scan(/--config=(\S+)/).last.first
+  if processes(kubeproxy).exists?
+    conf_file = processes(kubeproxy).commands.first.scan(/--(kube)?config=(\S+)/).last[1]
 
     describe file(conf_file).mode.to_s do
       it { should match(/[0246][024][024]/) }
@@ -120,8 +123,8 @@ control 'cis-kubernetes-benchmark-2.2.6' do
   tag cis: 'kubernetes:2.2.6'
   tag level: 1
 
-  if processes('kube-proxy').exists?
-    conf_file = processes('kube-proxy').commands.first.scan(/--config=(\S+)/).last.first
+  if processes(kubeproxy).exists?
+    conf_file = processes(kubeproxy).commands.first.scan(/--(kube)?config=(\S+)/).last[1]
 
     describe file(conf_file) do
       it { should be_owned_by 'root' }

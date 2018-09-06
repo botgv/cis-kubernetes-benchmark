@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RSpec results</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Expires" content="-1" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <style type="text/css">
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font-size: 80%;
+  }
+  </style>
+  <script type="text/javascript">
+    // <![CDATA[
+
+function addClass(element_id, classname) {
+  document.getElementById(element_id).className += (" " + classname);
+}
+
+function removeClass(element_id, classname) {
+  var elem = document.getElementById(element_id);
+  var classlist = elem.className.replace(classname,'');
+  elem.className = classlist;
+}
+
+function moveProgressBar(percentDone) {
+  document.getElementById("rspec-header").style.width = percentDone +"%";
+}
+
+function makeRed(element_id) {
+  removeClass(element_id, 'passed');
+  removeClass(element_id, 'not_implemented');
+  addClass(element_id,'failed');
+}
+
+function makeYellow(element_id) {
+  var elem = document.getElementById(element_id);
+  if (elem.className.indexOf("failed") == -1) {  // class doesn't includes failed
+    if (elem.className.indexOf("not_implemented") == -1) { // class doesn't include not_implemented
+      removeClass(element_id, 'passed');
+      addClass(element_id,'not_implemented');
+    }
+  }
+}
+
+function apply_filters() {
+  var passed_filter = document.getElementById('passed_checkbox').checked;
+  var failed_filter = document.getElementById('failed_checkbox').checked;
+  var pending_filter = document.getElementById('pending_checkbox').checked;
+
+  assign_display_style("example passed", passed_filter);
+  assign_display_style("example failed", failed_filter);
+  assign_display_style("example not_implemented", pending_filter);
+
+  assign_display_style_for_group("example_group passed", passed_filter);
+  assign_display_style_for_group("example_group not_implemented", pending_filter, pending_filter || passed_filter);
+  assign_display_style_for_group("example_group failed", failed_filter, failed_filter || pending_filter || passed_filter);
+}
+
+function get_display_style(display_flag) {
+  var style_mode = 'none';
+  if (display_flag == true) {
+    style_mode = 'block';
+  }
+  return style_mode;
+}
+
+function assign_display_style(classname, display_flag) {
+  var style_mode = get_display_style(display_flag);
+  var elems = document.getElementsByClassName(classname)
+  for (var i=0; i<elems.length;i++) {
+    elems[i].style.display = style_mode;
+  }
+}
+
+function assign_display_style_for_group(classname, display_flag, subgroup_flag) {
+  var display_style_mode = get_display_style(display_flag);
+  var subgroup_style_mode = get_display_style(subgroup_flag);
+  var elems = document.getElementsByClassName(classname)
+  for (var i=0; i<elems.length;i++) {
+    var style_mode = display_style_mode;
+    if ((display_flag != subgroup_flag) && (elems[i].getElementsByTagName('dt')[0].innerHTML.indexOf(", ") != -1)) {
+      elems[i].style.display = subgroup_style_mode;
+    } else {
+      elems[i].style.display = display_style_mode;
+    }
+  }
+}
+
+    // ]]>
+  </script>
+  <style type="text/css">
+#rspec-header {
+  background: #65C400; color: #fff; height: 4em;
+}
+
+.rspec-report h1 {
+  margin: 0px 10px 0px 10px;
+  padding: 10px;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+  font-size: 1.8em;
+  position: absolute;
+}
+
+#label {
+  float:left;
+}
+
+#display-filters {
+  float:left;
+  padding: 28px 0 0 40%;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+}
+
+#summary {
+  float:right;
+  padding: 5px 10px;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+  text-align: right;
+}
+
+#summary p {
+  margin: 0 0 0 2px;
+}
+
+#summary #totals {
+  font-size: 1.2em;
+}
+
+.example_group {
+  margin: 0 10px 5px;
+  background: #fff;
+}
+
+dl {
+  margin: 0; padding: 0 0 5px;
+  font: normal 11px "Lucida Grande", Helvetica, sans-serif;
+}
+
+dt {
+  padding: 3px;
+  background: #65C400;
+  color: #fff;
+  font-weight: bold;
+}
+
+dd {
+  margin: 5px 0 5px 5px;
+  padding: 3px 3px 3px 18px;
+}
+
+dd .duration {
+  padding-left: 5px;
+  text-align: right;
+  right: 0px;
+  float:right;
+}
+
+dd.example.passed {
+  border-left: 5px solid #65C400;
+  border-bottom: 1px solid #65C400;
+  background: #DBFFB4; color: #3D7700;
+}
+
+dd.example.not_implemented {
+  border-left: 5px solid #FAF834;
+  border-bottom: 1px solid #FAF834;
+  background: #FCFB98; color: #131313;
+}
+
+dd.example.pending_fixed {
+  border-left: 5px solid #0000C2;
+  border-bottom: 1px solid #0000C2;
+  color: #0000C2; background: #D3FBFF;
+}
+
+dd.example.failed {
+  border-left: 5px solid #C20000;
+  border-bottom: 1px solid #C20000;
+  color: #C20000; background: #FFFBD3;
+}
+
+
+dt.not_implemented {
+  color: #000000; background: #FAF834;
+}
+
+dt.pending_fixed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+dt.failed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+
+#rspec-header.not_implemented {
+  color: #000000; background: #FAF834;
+}
+
+#rspec-header.pending_fixed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+#rspec-header.failed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+
+.backtrace {
+  color: #000;
+  font-size: 12px;
+}
+
+a {
+  color: #BE5C00;
+}
+
+/* Ruby code, style similar to vibrant ink */
+.ruby {
+  font-size: 12px;
+  font-family: monospace;
+  color: white;
+  background-color: black;
+  padding: 0.1em 0 0.2em 0;
+}
+
+.ruby .keyword { color: #FF6600; }
+.ruby .constant { color: #339999; }
+.ruby .attribute { color: white; }
+.ruby .global { color: white; }
+.ruby .module { color: white; }
+.ruby .class { color: white; }
+.ruby .string { color: #66FF00; }
+.ruby .ident { color: white; }
+.ruby .method { color: #FFCC00; }
+.ruby .number { color: white; }
+.ruby .char { color: white; }
+.ruby .comment { color: #9933CC; }
+.ruby .symbol { color: white; }
+.ruby .regex { color: #44B4CC; }
+.ruby .punct { color: white; }
+.ruby .escape { color: white; }
+.ruby .interp { color: white; }
+.ruby .expr { color: white; }
+
+.ruby .offending { background-color: gray; }
+.ruby .linenum {
+  width: 75px;
+  padding: 0.1em 1em 0.2em 0;
+  color: #000000;
+  background-color: #FFFBD3;
+}
+
+  </style>
+</head>
+<body>
+<div class="rspec-report">
+
+<div id="rspec-header">
+  <div id="label">
+    <h1>RSpec Code Examples</h1>
+  </div>
+
+  <div id="display-filters">
+    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
+    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
+    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checked" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
+  </div>
+
+  <div id="summary">
+    <p id="totals">&#160;</p>
+    <p id="duration">&#160;</p>
+  </div>
+</div>
+
+
+<div class="results">
+<div id="div_group_1" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_1" class="passed">[&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --address=127.0.0.1 --port=10252 --root-ca-file=/etc/ssl/certs/werkspot-ca.pem --service-account-private-key-file=/etc/ssl/certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('rspec-header');</script>
+    <script type="text/javascript">makeRed('div_group_1');</script>
+    <script type="text/javascript">makeRed('example_group_1');</script>
+    <script type="text/javascript">moveProgressBar('1.3');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--terminated-pod-gc-threshold=/</span>
+      <span class="duration">0.00058s</span>
+      <div class="failure" id="failure_1">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --...certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws\&quot;]&quot; to match /--terminated-pod-gc-threshold=/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--terminated-pod-gc-threshold=/
+    +&quot;[\&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --address=127.0.0.1 --port=10252 --root-ca-file=/etc/ssl/certs/werkspot-ca.pem --service-account-private-key-file=/etc/ssl/certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_3_master_node_controller_manager.rb:35:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_3_master_node_controller_manager.rb:35:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">33</span>
+<span class="linenum">34</span>  <span class="keyword">describe</span> processes(controller_manager).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">35</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--terminated-pod-gc-threshold=</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">36</span>  <span class="keyword">end</span>
+<span class="linenum">37</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_2" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_2" class="passed">[&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --address=127.0.0.1 --port=10252 --root-ca-file=/etc/ssl/certs/werkspot-ca.pem --service-account-private-key-file=/etc/ssl/certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_2');</script>
+    <script type="text/javascript">makeRed('example_group_2');</script>
+    <script type="text/javascript">moveProgressBar('2.7');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--profiling=false/</span>
+      <span class="duration">0.00061s</span>
+      <div class="failure" id="failure_2">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --...certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws\&quot;]&quot; to match /--profiling=false/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--profiling=false/
+    +&quot;[\&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --address=127.0.0.1 --port=10252 --root-ca-file=/etc/ssl/certs/werkspot-ca.pem --service-account-private-key-file=/etc/ssl/certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_3_master_node_controller_manager.rb:48:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_3_master_node_controller_manager.rb:48:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">46</span>
+<span class="linenum">47</span>  <span class="keyword">describe</span> processes(controller_manager).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">48</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--profiling=false</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">49</span>  <span class="keyword">end</span>
+<span class="linenum">50</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_3" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_3" class="passed">[&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --address=127.0.0.1 --port=10252 --root-ca-file=/etc/ssl/certs/werkspot-ca.pem --service-account-private-key-file=/etc/ssl/certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_3');</script>
+    <script type="text/javascript">makeRed('example_group_3');</script>
+    <script type="text/javascript">moveProgressBar('4.0');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--use-service-account-credentials=true/</span>
+      <span class="duration">0.00044s</span>
+      <div class="failure" id="failure_3">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --...certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws\&quot;]&quot; to match /--use-service-account-credentials=true/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--use-service-account-credentials=true/
+    +&quot;[\&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --address=127.0.0.1 --port=10252 --root-ca-file=/etc/ssl/certs/werkspot-ca.pem --service-account-private-key-file=/etc/ssl/certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_3_master_node_controller_manager.rb:61:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_3_master_node_controller_manager.rb:61:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">59</span>
+<span class="linenum">60</span>  <span class="keyword">describe</span> processes(controller_manager).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">61</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--use-service-account-credentials=true</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">62</span>  <span class="keyword">end</span>
+<span class="linenum">63</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_4" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_4" class="passed">[&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --address=127.0.0.1 --port=10252 --root-ca-file=/etc/ssl/certs/werkspot-ca.pem --service-account-private-key-file=/etc/ssl/certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('5.4');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--service-account-private-key-file=/</span><span class='duration'>0.00021s</span></dd>
+  </dl>
+</div>
+<div id="div_group_5" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_5" class="passed">[&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --address=127.0.0.1 --port=10252 --root-ca-file=/etc/ssl/certs/werkspot-ca.pem --service-account-private-key-file=/etc/ssl/certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('6.7');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--root-ca-file=/</span><span class='duration'>0.00013s</span></dd>
+  </dl>
+</div>
+<div id="div_group_6" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_6" class="passed">cis-kubernetes-benchmark-1.3.6</dt>
+    <script type="text/javascript">makeYellow('div_group_6');</script>
+    <script type="text/javascript">makeYellow('example_group_6');</script>
+    <script type="text/javascript">moveProgressBar('8.1');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Review the pod definitions in your cluster and verify that you have security contexts defined as appropriate. (PENDING: No reason given)</span></dd>
+  </dl>
+</div>
+<div id="div_group_7" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_7" class="passed">[&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --address=127.0.0.1 --port=10252 --root-ca-file=/etc/ssl/certs/werkspot-ca.pem --service-account-private-key-file=/etc/ssl/certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_7');</script>
+    <script type="text/javascript">makeRed('example_group_7');</script>
+    <script type="text/javascript">moveProgressBar('9.4');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--feature-gates=(?:.)*RotateKubeletServerCertificate=true,*(?:.)*/</span>
+      <span class="duration">0.00047s</span>
+      <div class="failure" id="failure_4">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --...certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws\&quot;]&quot; to match /--feature-gates=(?:.)*RotateKubeletServerCertificate=true,*(?:.)*/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--feature-gates=(?:.)*RotateKubeletServerCertificate=true,*(?:.)*/
+    +&quot;[\&quot;/hyperkube controller-manager --kubeconfig=/etc/kubernetes/kubeconfig.yaml --leader-elect=true --address=127.0.0.1 --port=10252 --root-ca-file=/etc/ssl/certs/werkspot-ca.pem --service-account-private-key-file=/etc/ssl/certs/kube-service-account-key.pem --service-cluster-ip-range=10.208.0.0/16 --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_3_master_node_controller_manager.rb:113:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_3_master_node_controller_manager.rb:113:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">111</span>
+<span class="linenum">112</span>  <span class="keyword">describe</span> processes(controller_manager).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">113</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--feature-gates=(?:.)*RotateKubeletServerCertificate=true,*(?:.)*</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">114</span>  <span class="keyword">end</span>
+<span class="linenum">115</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_8" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_8" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('10.8');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--anonymous-auth=false/</span><span class='duration'>0.00022s</span></dd>
+  </dl>
+</div>
+<div id="div_group_9" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_9" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('12.1');</script>
+    <dd class="example passed"><span class="passed_spec_name">should not match /--basic-auth-file/</span><span class='duration'>0.00014s</span></dd>
+  </dl>
+</div>
+<div id="div_group_10" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_10" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('13.5');</script>
+    <dd class="example passed"><span class="passed_spec_name">should not match /--insecure-allow-any-token/</span><span class='duration'>0.00014s</span></dd>
+  </dl>
+</div>
+<div id="div_group_11" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_11" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('14.8');</script>
+    <dd class="example passed"><span class="passed_spec_name">should not match /--kubelet-https/</span><span class='duration'>0.00012s</span></dd>
+  </dl>
+</div>
+<div id="div_group_12" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_12" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('16.2');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--insecure-bind-address=127\.0\.0\.1/</span><span class='duration'>0.00011s</span></dd>
+  </dl>
+</div>
+<div id="div_group_13" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_13" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_13');</script>
+    <script type="text/javascript">makeRed('example_group_13');</script>
+    <script type="text/javascript">moveProgressBar('17.5');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--insecure-port=0/</span>
+      <span class="duration">0.00065s</span>
+      <div class="failure" id="failure_5">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--insecure-port=0/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--insecure-port=0/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:110:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:110:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">108</span>
+<span class="linenum">109</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">110</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--insecure-port=0</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">111</span>  <span class="keyword">end</span>
+<span class="linenum">112</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_14" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_14" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('18.9');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--secure-port=([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/</span><span class='duration'>0.00022s</span></dd>
+  </dl>
+</div>
+<div id="div_group_15" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_15" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_15');</script>
+    <script type="text/javascript">makeRed('example_group_15');</script>
+    <script type="text/javascript">moveProgressBar('20.2');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--profiling=false/</span>
+      <span class="duration">0.00078s</span>
+      <div class="failure" id="failure_6">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--profiling=false/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--profiling=false/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:141:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:141:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">139</span>
+<span class="linenum">140</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">141</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--profiling=false</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">142</span>  <span class="keyword">end</span>
+<span class="linenum">143</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_16" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_16" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_16');</script>
+    <script type="text/javascript">makeRed('example_group_16');</script>
+    <script type="text/javascript">moveProgressBar('21.6');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--repair-malformed-updates=false/</span>
+      <span class="duration">0.00080s</span>
+      <div class="failure" id="failure_7">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--repair-malformed-updates=false/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--repair-malformed-updates=false/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:154:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:154:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">152</span>
+<span class="linenum">153</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">154</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--repair-malformed-updates=false</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">155</span>  <span class="keyword">end</span>
+<span class="linenum">156</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_17" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_17" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('22.9');</script>
+    <dd class="example passed"><span class="passed_spec_name">should not match /--admission-control=(?:.)*AlwaysAdmit,*(?:.)*/</span><span class='duration'>0.00023s</span></dd>
+    <script type="text/javascript">makeRed('div_group_17');</script>
+    <script type="text/javascript">makeRed('example_group_17');</script>
+    <script type="text/javascript">moveProgressBar('24.3');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--admission-control=/</span>
+      <span class="duration">0.00078s</span>
+      <div class="failure" id="failure_8">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--admission-control=/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--admission-control=/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:168:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:168:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">166</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="linenum">167</span>    <span class="keyword">it</span> { should_not match(<span class="regexp"><span class="delimiter">/</span><span class="content">--admission-control=(?:.)*AlwaysAdmit,*(?:.)*</span><span class="delimiter">/</span></span>) }
+<span class="offending"><span class="linenum">168</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--admission-control=</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">169</span>  <span class="keyword">end</span>
+<span class="linenum">170</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_18" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_18" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_18');</script>
+    <script type="text/javascript">makeRed('example_group_18');</script>
+    <script type="text/javascript">moveProgressBar('25.6');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--admission-control=(?:.)*AlwaysPullImages,*(?:.)*/</span>
+      <span class="duration">0.00075s</span>
+      <div class="failure" id="failure_9">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--admission-control=(?:.)*AlwaysPullImages,*(?:.)*/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--admission-control=(?:.)*AlwaysPullImages,*(?:.)*/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:181:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:181:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">179</span>
+<span class="linenum">180</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">181</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--admission-control=(?:.)*AlwaysPullImages,*(?:.)*</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">182</span>  <span class="keyword">end</span>
+<span class="linenum">183</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_19" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_19" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_19');</script>
+    <script type="text/javascript">makeRed('example_group_19');</script>
+    <script type="text/javascript">moveProgressBar('27.0');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--admission-control=(?:.)*DenyEscalatingExec,*(?:.)*/</span>
+      <span class="duration">0.00080s</span>
+      <div class="failure" id="failure_10">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--admission-control=(?:.)*DenyEscalatingExec,*(?:.)*/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--admission-control=(?:.)*DenyEscalatingExec,*(?:.)*/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:194:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:194:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">192</span>
+<span class="linenum">193</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">194</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--admission-control=(?:.)*DenyEscalatingExec,*(?:.)*</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">195</span>  <span class="keyword">end</span>
+<span class="linenum">196</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_20" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_20" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_20');</script>
+    <script type="text/javascript">makeRed('example_group_20');</script>
+    <script type="text/javascript">moveProgressBar('28.3');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--admission-control=(?:.)*SecurityContextDeny,*(?:.)*/</span>
+      <span class="duration">0.00084s</span>
+      <div class="failure" id="failure_11">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--admission-control=(?:.)*SecurityContextDeny,*(?:.)*/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--admission-control=(?:.)*SecurityContextDeny,*(?:.)*/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:207:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:207:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">205</span>
+<span class="linenum">206</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">207</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--admission-control=(?:.)*SecurityContextDeny,*(?:.)*</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">208</span>  <span class="keyword">end</span>
+<span class="linenum">209</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_21" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_21" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_21');</script>
+    <script type="text/javascript">makeRed('example_group_21');</script>
+    <script type="text/javascript">moveProgressBar('29.7');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--admission-control=(?:.)*NamespaceLifecycle,*(?:.)*/</span>
+      <span class="duration">0.00078s</span>
+      <div class="failure" id="failure_12">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--admission-control=(?:.)*NamespaceLifecycle,*(?:.)*/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--admission-control=(?:.)*NamespaceLifecycle,*(?:.)*/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:220:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:220:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">218</span>
+<span class="linenum">219</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">220</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--admission-control=(?:.)*NamespaceLifecycle,*(?:.)*</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">221</span>  <span class="keyword">end</span>
+<span class="linenum">222</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_22" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_22" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_22');</script>
+    <script type="text/javascript">makeRed('example_group_22');</script>
+    <script type="text/javascript">moveProgressBar('31.0');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--audit-log-path=/</span>
+      <span class="duration">0.00077s</span>
+      <div class="failure" id="failure_13">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--audit-log-path=/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--audit-log-path=/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:233:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:233:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">231</span>
+<span class="linenum">232</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">233</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--audit-log-path=</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">234</span>  <span class="keyword">end</span>
+<span class="linenum">235</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_23" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_23" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_23');</script>
+    <script type="text/javascript">makeRed('example_group_23');</script>
+    <script type="text/javascript">moveProgressBar('32.4');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--audit-log-maxage=/</span>
+      <span class="duration">0.00080s</span>
+      <div class="failure" id="failure_14">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--audit-log-maxage=/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--audit-log-maxage=/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:246:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:246:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">244</span>
+<span class="linenum">245</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">246</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--audit-log-maxage=</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">247</span>  <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_24" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_24" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_24');</script>
+    <script type="text/javascript">makeRed('example_group_24');</script>
+    <script type="text/javascript">moveProgressBar('33.7');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--audit-log-maxbackup=/</span>
+      <span class="duration">0.00079s</span>
+      <div class="failure" id="failure_15">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--audit-log-maxbackup=/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--audit-log-maxbackup=/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:267:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:267:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">265</span>
+<span class="linenum">266</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">267</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--audit-log-maxbackup=</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">268</span>  <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_25" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_25" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_25');</script>
+    <script type="text/javascript">makeRed('example_group_25');</script>
+    <script type="text/javascript">moveProgressBar('35.1');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--audit-log-maxsize=/</span>
+      <span class="duration">0.00077s</span>
+      <div class="failure" id="failure_16">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--audit-log-maxsize=/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--audit-log-maxsize=/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:288:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:288:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">286</span>
+<span class="linenum">287</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">288</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--audit-log-maxsize=</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">289</span>  <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_26" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_26" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('36.4');</script>
+    <dd class="example passed"><span class="passed_spec_name">should not match /--authorization-mode=(?:.)*AlwaysAllow,*(?:.)*/</span><span class='duration'>0.00028s</span></dd>
+    <script type="text/javascript">moveProgressBar('37.8');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--authorization-mode=/</span><span class='duration'>0.00022s</span></dd>
+  </dl>
+</div>
+<div id="div_group_27" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_27" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('39.1');</script>
+    <dd class="example passed"><span class="passed_spec_name">should not match /--token-auth-file/</span><span class='duration'>0.00019s</span></dd>
+  </dl>
+</div>
+<div id="div_group_28" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_28" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('40.5');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--kubelet-certificate-authority=/</span><span class='duration'>0.00021s</span></dd>
+  </dl>
+</div>
+<div id="div_group_29" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_29" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('41.8');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--kubelet-client-certificate=/</span><span class='duration'>0.00021s</span></dd>
+    <script type="text/javascript">moveProgressBar('43.2');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--kubelet-client-key=/</span><span class='duration'>0.00019s</span></dd>
+  </dl>
+</div>
+<div id="div_group_30" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_30" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_30');</script>
+    <script type="text/javascript">makeRed('example_group_30');</script>
+    <script type="text/javascript">moveProgressBar('44.5');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--service-account-lookup=true/</span>
+      <span class="duration">0.00082s</span>
+      <div class="failure" id="failure_17">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--service-account-lookup=true/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--service-account-lookup=true/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:363:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:363:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">361</span>
+<span class="linenum">362</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">363</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--service-account-lookup=true</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">364</span>  <span class="keyword">end</span>
+<span class="linenum">365</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_31" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_31" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_31');</script>
+    <script type="text/javascript">makeRed('example_group_31');</script>
+    <script type="text/javascript">moveProgressBar('45.9');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--admission-control=(?:.)*PodSecurityPolicy,*(?:.)*/</span>
+      <span class="duration">0.00079s</span>
+      <div class="failure" id="failure_18">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--admission-control=(?:.)*PodSecurityPolicy,*(?:.)*/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--admission-control=(?:.)*PodSecurityPolicy,*(?:.)*/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:376:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:376:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">374</span>
+<span class="linenum">375</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">376</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--admission-control=(?:.)*PodSecurityPolicy,*(?:.)*</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">377</span>  <span class="keyword">end</span>
+<span class="linenum">378</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_32" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_32" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('47.2');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--service-account-key-file=/</span><span class='duration'>0.00024s</span></dd>
+  </dl>
+</div>
+<div id="div_group_33" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_33" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('48.6');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--etcd-certfile=/</span><span class='duration'>0.00022s</span></dd>
+    <script type="text/javascript">moveProgressBar('50.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--etcd-keyfile=/</span><span class='duration'>0.00020s</span></dd>
+  </dl>
+</div>
+<div id="div_group_34" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_34" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_34');</script>
+    <script type="text/javascript">makeRed('example_group_34');</script>
+    <script type="text/javascript">moveProgressBar('51.3');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--admission-control=(?:.)*ServiceAccount,*(?:.)*/</span>
+      <span class="duration">0.00086s</span>
+      <div class="failure" id="failure_19">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--admission-control=(?:.)*ServiceAccount,*(?:.)*/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--admission-control=(?:.)*ServiceAccount,*(?:.)*/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:416:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:416:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">414</span>
+<span class="linenum">415</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">416</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--admission-control=(?:.)*ServiceAccount,*(?:.)*</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">417</span>  <span class="keyword">end</span>
+<span class="linenum">418</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_35" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_35" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('52.7');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--tls-cert-file=/</span><span class='duration'>0.00025s</span></dd>
+    <script type="text/javascript">moveProgressBar('54.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--tls-private-key-file=/</span><span class='duration'>0.00019s</span></dd>
+  </dl>
+</div>
+<div id="div_group_36" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_36" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('55.4');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--client-ca-file=/</span><span class='duration'>0.00019s</span></dd>
+  </dl>
+</div>
+<div id="div_group_37" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_37" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('56.7');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /--etcd-cafile/</span><span class='duration'>0.00019s</span></dd>
+  </dl>
+</div>
+<div id="div_group_38" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_38" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_38');</script>
+    <script type="text/javascript">makeRed('example_group_38');</script>
+    <script type="text/javascript">moveProgressBar('58.1');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--authorization-mode=(?:.)*Node,*(?:.)*/</span>
+      <span class="duration">0.00081s</span>
+      <div class="failure" id="failure_20">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--authorization-mode=(?:.)*Node,*(?:.)*/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--authorization-mode=(?:.)*Node,*(?:.)*/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:469:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:469:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">467</span>
+<span class="linenum">468</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">469</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--authorization-mode=(?:.)*Node,*(?:.)*</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">470</span>  <span class="keyword">end</span>
+<span class="linenum">471</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_39" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_39" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_39');</script>
+    <script type="text/javascript">makeRed('example_group_39');</script>
+    <script type="text/javascript">moveProgressBar('59.4');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--admission-control=(?:.)*NodeRestriction,*(?:.)*/</span>
+      <span class="duration">0.00079s</span>
+      <div class="failure" id="failure_21">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--admission-control=(?:.)*NodeRestriction,*(?:.)*/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--admission-control=(?:.)*NodeRestriction,*(?:.)*/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:482:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:482:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">480</span>
+<span class="linenum">481</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">482</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--admission-control=(?:.)*NodeRestriction,*(?:.)*</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">483</span>  <span class="keyword">end</span>
+<span class="linenum">484</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_40" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_40" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_40');</script>
+    <script type="text/javascript">makeRed('example_group_40');</script>
+    <script type="text/javascript">moveProgressBar('60.8');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--experimental-encryption-provider-config=/</span>
+      <span class="duration">0.00076s</span>
+      <div class="failure" id="failure_22">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--experimental-encryption-provider-config=/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--experimental-encryption-provider-config=/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:495:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:495:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">493</span>
+<span class="linenum">494</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">495</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--experimental-encryption-provider-config=</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">496</span>  <span class="keyword">end</span>
+<span class="linenum">497</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_41" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_41" class="passed">cis-kubernetes-benchmark-1.1.34</dt>
+    <script type="text/javascript">makeYellow('div_group_41');</script>
+    <script type="text/javascript">makeYellow('example_group_41');</script>
+    <script type="text/javascript">moveProgressBar('62.1');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Review the `EncryptionConfig` file and verify that `aescbc` is used as the encryption provider. (PENDING: No reason given)</span></dd>
+  </dl>
+</div>
+<div id="div_group_42" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_42" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">makeRed('div_group_42');</script>
+    <script type="text/javascript">makeRed('example_group_42');</script>
+    <script type="text/javascript">moveProgressBar('63.5');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">should match /--admission-control=(?:.)*EventRateLimit,*(?:.)*/</span>
+      <span class="duration">0.00081s</span>
+      <div class="failure" id="failure_23">
+        <div class="message"><pre>  Failure/Error: [0m[1;34;4mDEFAULT_FAILURE_NOTIFIER[0m = lambda { |failure, _opts| raise failure }
+
+    expected &quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oi...uth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot; to match /--admission-control=(?:.)*EventRateLimit,*(?:.)*/
+    Diff:
+    @@ -1,2 +1,2 @@
+    -/--admission-control=(?:.)*EventRateLimit,*(?:.)*/
+    +&quot;[\&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws\&quot;]&quot;
+  # ./controls/1_1_master_node_api_server.rb:521:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>./controls/1_1_master_node_api_server.rb:521:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">519</span>
+<span class="linenum">520</span>  <span class="keyword">describe</span> processes(apiserver).commands.to_s <span class="keyword">do</span>
+<span class="offending"><span class="linenum">521</span>    <span class="keyword">it</span> { should match(<span class="regexp"><span class="delimiter">/</span><span class="content">--admission-control=(?:.)*EventRateLimit,*(?:.)*</span><span class="delimiter">/</span></span>) }</span>
+<span class="linenum">522</span>  <span class="keyword">end</span>
+<span class="linenum">523</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_43" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_43" class="passed">[&quot;/hyperkube apiserver --authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1 --oidc-issuer-url=https://dex.instapro.cloud --oidc-ca-file=/etc/ssl/certs/DST_Root_CA_X3.pem --oidc-client-id=dex-k8s-authenticator --oidc-groups-claim=groups --oidc-username-claim=email --advertise-address=10.206.16.17 --bind-address=10.206.16.17 --secure-port=443 --insecure-bind-address=127.0.0.1 --insecure-port=8080 --apiserver-count=2 --etcd-servers=https://10.206.17.30:2379,https://10.206.17.6:2379,https://10.206.17.11:2379 --etcd-cafile=/etc/ssl/certs/werkspot-ca.pem --etcd-certfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --etcd-keyfile=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --allow-privileged=true --service-cluster-ip-range=10.208.0.0/16 --kubelet-preferred-address-types=InternalIP --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota --client-ca-file=/etc/ssl/certs/werkspot-ca.pem --tls-cert-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --tls-private-key-file=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --kubelet-certificate-authority=/etc/ssl/certs/werkspot-ca.pem --kubelet-client-certificate=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal.pem --kubelet-client-key=/etc/ssl/certs/ip-10-206-16-17.eu-west-3.compute.internal-key.pem --service-account-key-file=/etc/ssl/certs/kube-service-account-key.pem --runtime-config=extensions/v1beta1/networkpolicies=true --anonymous-auth=false --feature-gates=PersistentLocalVolumes=true,VolumeScheduling=true --cloud-provider=aws&quot;]</dt>
+    <script type="text/javascript">moveProgressBar('64.8');</script>
+    <dd class="example passed"><span class="passed_spec_name">should not match /--feature-gates=(?:.)*AdvancedAuditing=false,*(?:.)*/</span><span class='duration'>0.00027s</span></dd>
+  </dl>
+</div>
+<div id="div_group_44" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_44" class="passed">cis-kubernetes-benchmark-1.1.37</dt>
+    <script type="text/javascript">makeYellow('div_group_44');</script>
+    <script type="text/javascript">makeYellow('example_group_44');</script>
+    <script type="text/javascript">moveProgressBar('66.2');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">If you have a request timeout set, verify that it is set to an appropriate value (PENDING: No reason given)</span></dd>
+  </dl>
+</div>
+<div id="div_group_45" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_45" class="passed">cis-kubernetes-benchmark-1.6.1</dt>
+    <script type="text/javascript">makeYellow('div_group_45');</script>
+    <script type="text/javascript">makeYellow('example_group_45');</script>
+    <script type="text/javascript">moveProgressBar('67.5');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Review the output of `kubectl get clusterrolebindings -o=custom-columns=NAME:.metadata.name,ROLE:.roleRef.name,SUBJECT:.subjects[*].name` and ensure the listed principals require `cluster-admin` privileges. (PENDING: No reason given)</span></dd>
+  </dl>
+</div>
+<div id="div_group_46" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_46" class="passed">cis-kubernetes-benchmark-1.6.2</dt>
+    <script type="text/javascript">makeYellow('div_group_46');</script>
+    <script type="text/javascript">makeYellow('example_group_46');</script>
+    <script type="text/javascript">moveProgressBar('68.9');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Review the output of `kubectl get psp` and ensure policies are configured per your security requirements. (PENDING: No reason given)</span></dd>
+  </dl>
+</div>
+<div id="div_group_47" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_47" class="passed">cis-kubernetes-benchmark-1.6.3</dt>
+    <script type="text/javascript">makeYellow('div_group_47');</script>
+    <script type="text/javascript">makeYellow('example_group_47');</script>
+    <script type="text/javascript">moveProgressBar('70.2');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Review the output of `kubectl get namespaces` and ensure they are the ones you need. (PENDING: No reason given)</span></dd>
+  </dl>
+</div>
+<div id="div_group_48" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_48" class="passed">420</dt>
+    <script type="text/javascript">moveProgressBar('71.6');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /[0246][024][024]/</span><span class='duration'>0.00027s</span></dd>
+  </dl>
+</div>
+<div id="div_group_49" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_49" class="passed">File /etc/kubernetes/manifests/kube-apiserver.yaml</dt>
+    <script type="text/javascript">moveProgressBar('72.9');</script>
+    <dd class="example passed"><span class="passed_spec_name">should be owned by &quot;root&quot;</span><span class='duration'>0.00348s</span></dd>
+    <script type="text/javascript">moveProgressBar('74.3');</script>
+    <dd class="example passed"><span class="passed_spec_name">should be grouped into &quot;root&quot;</span><span class='duration'>0.00028s</span></dd>
+  </dl>
+</div>
+<div id="div_group_50" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_50" class="passed">420</dt>
+    <script type="text/javascript">moveProgressBar('75.6');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /[0246][024][024]/</span><span class='duration'>0.00023s</span></dd>
+  </dl>
+</div>
+<div id="div_group_51" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_51" class="passed">File /etc/kubernetes/manifests/kube-controller-manager.yaml</dt>
+    <script type="text/javascript">moveProgressBar('77.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should be owned by &quot;root&quot;</span><span class='duration'>0.00027s</span></dd>
+    <script type="text/javascript">moveProgressBar('78.3');</script>
+    <dd class="example passed"><span class="passed_spec_name">should be grouped into &quot;root&quot;</span><span class='duration'>0.00028s</span></dd>
+  </dl>
+</div>
+<div id="div_group_52" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_52" class="passed">420</dt>
+    <script type="text/javascript">moveProgressBar('79.7');</script>
+    <dd class="example passed"><span class="passed_spec_name">should match /[0246][024][024]/</span><span class='duration'>0.00021s</span></dd>
+  </dl>
+</div>
+<div id="div_group_53" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_53" class="passed">File /etc/kubernetes/manifests/kube-scheduler.yaml</dt>
+    <script type="text/javascript">moveProgressBar('81.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should be owned by &quot;root&quot;</span><span class='duration'>0.00025s</span></dd>
+    <script type="text/javascript">moveProgressBar('82.4');</script>
+    <dd class="example passed"><span class="passed_spec_name">should be grouped into &quot;root&quot;</span><span class='duration'>0.00023s</span></dd>
+  </dl>
+</div>
+<div id="div_group_54" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_54" class="passed">Operating System Detection</dt>
+    <script type="text/javascript">makeYellow('div_group_54');</script>
+    <script type="text/javascript">makeYellow('example_group_54');</script>
+    <script type="text/javascript">moveProgressBar('83.7');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Skipped control due to only_if condition. (PENDING: Not yet implemented)</span></dd>
+  </dl>
+</div>
+<div id="div_group_55" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_55" class="passed">Operating System Detection</dt>
+    <script type="text/javascript">makeYellow('div_group_55');</script>
+    <script type="text/javascript">makeYellow('example_group_55');</script>
+    <script type="text/javascript">moveProgressBar('85.1');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Skipped control due to only_if condition. (PENDING: Not yet implemented)</span></dd>
+  </dl>
+</div>
+<div id="div_group_56" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_56" class="passed">cis-kubernetes-benchmark-1.4.9</dt>
+    <script type="text/javascript">makeYellow('div_group_56');</script>
+    <script type="text/javascript">makeYellow('example_group_56');</script>
+    <script type="text/javascript">moveProgressBar('86.4');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Review the permissions on your CNI configuration file(s). (PENDING: No reason given)</span></dd>
+  </dl>
+</div>
+<div id="div_group_57" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_57" class="passed">cis-kubernetes-benchmark-1.4.10</dt>
+    <script type="text/javascript">makeYellow('div_group_57');</script>
+    <script type="text/javascript">makeYellow('example_group_57');</script>
+    <script type="text/javascript">moveProgressBar('87.8');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Review the ownership of your CNI configuration file(s). (PENDING: No reason given)</span></dd>
+  </dl>
+</div>
+<div id="div_group_58" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_58" class="passed">cis-kubernetes-benchmark-1.4.11</dt>
+    <script type="text/javascript">makeYellow('div_group_58');</script>
+    <script type="text/javascript">makeYellow('example_group_58');</script>
+    <script type="text/javascript">moveProgressBar('89.1');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">etcd data directory not found (PENDING: No reason given)</span></dd>
+  </dl>
+</div>
+<div id="div_group_59" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_59" class="passed">cis-kubernetes-benchmark-1.4.12</dt>
+    <script type="text/javascript">makeYellow('div_group_59');</script>
+    <script type="text/javascript">makeYellow('example_group_59');</script>
+    <script type="text/javascript">moveProgressBar('90.5');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">etcd data directory not found (PENDING: No reason given)</span></dd>
+  </dl>
+</div>
+<div id="div_group_60" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_60" class="passed">Operating System Detection</dt>
+    <script type="text/javascript">makeYellow('div_group_60');</script>
+    <script type="text/javascript">makeYellow('example_group_60');</script>
+    <script type="text/javascript">moveProgressBar('91.8');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Skipped control due to only_if condition. (PENDING: Not yet implemented)</span></dd>
+  </dl>
+</div>
+<div id="div_group_61" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_61" class="passed">Operating System Detection</dt>
+    <script type="text/javascript">makeYellow('div_group_61');</script>
+    <script type="text/javascript">makeYellow('example_group_61');</script>
+    <script type="text/javascript">moveProgressBar('93.2');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Skipped control due to only_if condition. (PENDING: Not yet implemented)</span></dd>
+  </dl>
+</div>
+<div id="div_group_62" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_62" class="passed">Operating System Detection</dt>
+    <script type="text/javascript">makeYellow('div_group_62');</script>
+    <script type="text/javascript">makeYellow('example_group_62');</script>
+    <script type="text/javascript">moveProgressBar('94.5');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Skipped control due to only_if condition. (PENDING: Not yet implemented)</span></dd>
+  </dl>
+</div>
+<div id="div_group_63" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_63" class="passed">Operating System Detection</dt>
+    <script type="text/javascript">makeYellow('div_group_63');</script>
+    <script type="text/javascript">makeYellow('example_group_63');</script>
+    <script type="text/javascript">moveProgressBar('95.9');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Skipped control due to only_if condition. (PENDING: Not yet implemented)</span></dd>
+  </dl>
+</div>
+<div id="div_group_64" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_64" class="passed">Operating System Detection</dt>
+    <script type="text/javascript">makeYellow('div_group_64');</script>
+    <script type="text/javascript">makeYellow('example_group_64');</script>
+    <script type="text/javascript">moveProgressBar('97.2');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Skipped control due to only_if condition. (PENDING: Not yet implemented)</span></dd>
+  </dl>
+</div>
+<div id="div_group_65" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_65" class="passed">Operating System Detection</dt>
+    <script type="text/javascript">makeYellow('div_group_65');</script>
+    <script type="text/javascript">makeYellow('example_group_65');</script>
+    <script type="text/javascript">moveProgressBar('98.6');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Skipped control due to only_if condition. (PENDING: Not yet implemented)</span></dd>
+  </dl>
+</div>
+<div id="div_group_66" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_66" class="passed">Operating System Detection</dt>
+    <script type="text/javascript">makeYellow('div_group_66');</script>
+    <script type="text/javascript">makeYellow('example_group_66');</script>
+    <script type="text/javascript">moveProgressBar('100.0');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">Skipped control due to only_if condition. (PENDING: Not yet implemented)</span></dd>
+  </dl>
+</div>
+<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>0.24234 seconds</strong>";</script>
+<script type="text/javascript">document.getElementById('totals').innerHTML = "74 examples, 23 failures, 19 pending";</script>
+</div>
+</div>
+</body>
+</html>

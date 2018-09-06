@@ -19,7 +19,7 @@ cis_level = attribute('cis_level', default: '2', description: 'CIS profile level
 
 title '1.5 Master Node: etcd'
 
-etcd_regex = Regexp.new(%r{/usr/bin/etcd})
+etcd_regex = Regexp.new(%r{/usr/(local/)?bin/etcd})
 etcd_process = processes(etcd_regex)
 etcd_env_vars = process_env_var(etcd_regex)
 

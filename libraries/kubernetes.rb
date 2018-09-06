@@ -32,6 +32,10 @@ class Kubernetes < Inspec.resource(1)
     'federation-apiserver'
   end
 
+  def processname_kubeproxy
+    'kube-proxy'
+  end
+
   def processname_scheduler
     'kube-scheduler'
   end

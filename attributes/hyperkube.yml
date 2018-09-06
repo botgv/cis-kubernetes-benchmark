@@ -1,0 +1,5 @@
+apiserver: /hyperkube apiserver
+controller_manager: /hyperkube controller-manager
+kubeproxy: /hyperkube proxy
+scheduler: /hyperkube scheduler
+cis_level: 2
